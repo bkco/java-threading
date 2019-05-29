@@ -1,0 +1,10 @@
+{
+  "id": 123,
+  "versionInDatabase": 1,
+  "type": "APARTMENT_RENT",
+  "objectNumber": "123",
+  "groupNumber": 12345,
+  "realEstateProjectId": null,
+  "commerceType": "RENT"
+}
+

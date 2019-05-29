@@ -1,0 +1,110 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+idea {
+	project {
+        languageLevel = '1.8'
+    }
+    module {
+        jdkName = '1.8'
+    }
+}
+
+jar {
+    baseName = 'java-threading'
+    version = '0.0.1'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+ext {
+    springBootVersion = '2.1.2.RELEASE'
+    //springBootVersion = '2.0.5.RELEASE'
+}
+
+buildscript {
+	ext {
+        springBootVersion = '2.1.2.RELEASE'
+        //springBootVersion = '2.0.5.RELEASE'
+	}
+    repositories {
+		//mavenCentral()
+        jcenter()
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+    }
+    dependencies {
+        //classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+repositories {
+    //mavenCentral()
+    jcenter()
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
+}
+
+// BOM e.g https://github.com/spring-projects/spring-boot/blob/2.0.x/spring-boot-project/spring-boot-dependencies/pom.xml
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+
+        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.228'
+    }
+}
+
+dependencies {
+
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+
+    compile 'org.projectlombok:lombok'
+
+    // datastores
+    //compile('mysql:mysql-connector-java:5.1.39')
+
+    // logging (and logback-classic included by default with spring-boot-starter-* packages)
+    compile "org.slf4j:slf4j-api"
+    compile 'org.codehaus.janino:janino:2.6.1'
+    //compile 'ch.qos.logback:logback-classic:1.1.7'
+
+
+
+    compile('org.apache.commons:commons-lang3:3.4')
+    compile 'commons-io:commons-io:2.1'
+
+    compile('com.amazonaws:aws-java-sdk-s3')
+
+    compile('com.google.guava:guava:21.0')
+
+    compile 'com.google.code.gson:gson:2.8.2'
+
+    testCompile('junit:junit:4.12')
+    testCompile 'org.testcontainers:localstack:1.10.5'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}

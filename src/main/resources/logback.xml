@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  the library can automatically reload configuration files when they’re modified. -->
+<configuration debug="false" scan="false">
+
+  <!-- So we can modify log configuration at runtime via a JMX console. -->
+  <jmxConfigurator/>
+
+  <!-- The <springProperty> tag lets you expose properties from the Spring Environment for use within Logback
+  Example usage in /resources/application.yml
+  logging:
+    level:
+      de:
+        is24: DEBUG
+      org:
+        springframework: INFO
+  -->
+  <springProperty name="LOGGING_LEVEL_CO_BK_TASK" source="logging.level.co.bk.task"/>
+
+  <logger name="co.bk.task" level='${LOGGING_LEVEL_CO_BK_TASK:-INFO}'/>
+  <logger name="org.springframework" level="INFO"/>
+
+
+  <!-- developer friendly log format -->
+  <appender name="log-to-stdout" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%date{"yyyy-MM-dd'T'HH:mm:ss,SSSXXX", UTC} %-6level [%thread] %logger{36} - [%X] - %msg%n</pattern>
+      <charset>utf8</charset>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="log-to-stdout"/>
+  </root>
+
+</configuration>

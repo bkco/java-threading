@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+
+    <!-- Enable log configuration at runtime via JMX -->
+    <jmxConfigurator/>
+
+    <!-- The <springProperty> tag lets you expose properties from the Spring Environment for use within Logback
+    Example usage in /resources/application.yml
+    logging:
+      level:
+        co:
+          bk:
+            task: DEBUG
+        custompackage1:
+            name: my.custom.package
+            level: DEBUG
+        custompackage2:
+            name: my.other.package
+            level: DEBUG
+        org:
+          springframework:
+            web: INFO
+            ws:
+              client:
+                MessageTracing: DEBUG
+              server:
+                MessageTracing: DEBUG
+    -->
+    <springProperty name="LOGGING_LEVEL_CO_BK_TASK" source="logging.level.co.bk.task"/>
+    <springProperty name="LOGGING_CUSTOM_PACKAGE_1_NAME" source="logging.level.custompackage1.name"/>
+    <springProperty name="LOGGING_CUSTOM_PACKAGE_2_NAME" source="logging.level.custompackage2.name"/>
+    <springProperty name="LOGGING_CUSTOM_PACKAGE_1_LEVEL" source="logging.level.custompackage1.level"/>
+    <springProperty name="LOGGING_CUSTOM_PACKAGE_2_LEVEL" source="logging.level.custompackage2.level"/>
+    <springProperty name="LOGGING_LEVEL_SPRING" source="logging.level.org.springframework"/>
+
+    <!-- Customised so we get the trace and span data in logs -->
+    <property name="CONSOLE_LOG_PATTERN" value="%d{ISO8601} %-5p - %X{req.id} - %c - %m%n"/>
+
+    <!-- Spring Boot defaults. -->
+    <conversionRule conversionWord="clr"
+                    converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+    <!-- Spring configurable log levels. -->
+    <logger name="co.bk.task" level='${LOGGING_LEVEL_CO_BK_TASK:-INFO}'/>
+    <logger name="${LOGGING_CUSTOM_PACKAGE_1_NAME:-###}" level='${LOGGING_CUSTOM_PACKAGE_1_LEVEL:-INFO}'/>
+    <logger name="${LOGGING_CUSTOM_PACKAGE_2_NAME:-###}" level='${LOGGING_CUSTOM_PACKAGE_2_LEVEL:-INFO}'/>
+    <logger name="org.apache.http" level="WARN"/>
+    <logger name="org.hibernate.validator.internal.util.Version" level="WARN"/>
+    <logger name="org.springframework" level='${LOGGING_LEVEL_SPRING:-WARN}'/>
+    <logger name="org.testcontainers" level="INFO"/>
+
+    <if condition='isDefined("LOG_TO_STDOUT") &amp;&amp; property("LOG_TO_STDOUT").equals("yes")'>
+        <then>
+            <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+                <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                    <includeMdc>true</includeMdc>
+                </encoder>
+            </appender>
+        </then>
+        <else>
+            <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+                <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                    <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+                    <charset>utf8</charset>
+                </encoder>
+            </appender>
+        </else>
+    </if>
+
+    <!-- Only one appender for local development environments. -->
+    <root>
+        <level value="${LOGGING_LEVEL_ROOT:-INFO}"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

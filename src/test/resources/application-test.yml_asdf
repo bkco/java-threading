@@ -1,0 +1,10 @@
+logging:
+  level:
+    co.bk.task: INFO
+
+bkco:
+  localstackUrlToS3: http://localhost:9572
+  clientRegionName: eu-west-1
+  clientSecretKey: fill-out
+  clientAccessKey: fill-out
+
